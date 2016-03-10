@@ -1,11 +1,10 @@
 package com.sophanna.app.appconfig;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -15,20 +14,19 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  */
 
 @Configuration
-@EnableAspectJAutoProxy
-//@EnableAutoConfiguration
+// This @EnableWebMvc annotation is used to work with
+// internalResourceViewResolver
+// If we don't put it, then when we return the logical name of page, it couldn't
+// find the page
+// to display with error code 404.
+@EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter {
-	
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
-	
-	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-		configurer.enable();
-	}
-	
+
 	@Bean
 	public InternalResourceViewResolver jspViewResolver() {
 		InternalResourceViewResolver bean = new InternalResourceViewResolver();
@@ -36,9 +34,12 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		bean.setSuffix(".jsp");
 		return bean;
 	}
-	
-//	@Bean(name = "multipl")
-	
+
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
+
 	@Bean(name = "messageSource")
 	public ReloadableResourceBundleMessageSource getMessageSource() {
 		ReloadableResourceBundleMessageSource resource = new ReloadableResourceBundleMessageSource();
@@ -46,9 +47,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		resource.setDefaultEncoding("UTF-8");
 		return resource;
 	}
-	
-//	@Bean
-//	public LoggingAspect loggingAspect() {
-//		return new LoggingAspectImpl();
-//	}
 }

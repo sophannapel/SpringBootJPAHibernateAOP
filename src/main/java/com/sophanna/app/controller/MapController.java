@@ -4,27 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import com.sophanna.app.model.Person;
-import com.sophanna.app.service.PersonService;
+import com.sophanna.app.model.Employee;
+import com.sophanna.app.service.EmployeeService;
 
 @Controller
 public class MapController {
 
-	@Autowired
-	private PersonService personService;
+	@Autowired EmployeeService employeeService;
 	
-	@RequestMapping("/hello/{name}")
-	public @ResponseBody String hello(@PathVariable String name) {
-		List<Person> list = personService.getAllPeople();
-//		System.out.println(list.toString());
-		return "Hello, " + name + "!";
-	}
-
 	@RequestMapping("/welcome")
 	public @ResponseBody String home() {
 		RestTemplate restTemplate = new RestTemplate();
@@ -32,8 +23,15 @@ public class MapController {
 		String list = restTemplate.getForObject(url, String.class);
 		return list;
 	}
+
+	@RequestMapping("/showmap")
+	public String showMap() {
+		return "map01";
+	}
 	
-//	public void printTest() {
-//		
-//	}
+	@RequestMapping("/viewallemployee")
+	public @ResponseBody List<Employee> viewAllEmployee() {
+		List<Employee> list = employeeService.getAll();
+		return list;
+	}
 }
